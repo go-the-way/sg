@@ -6,25 +6,38 @@ import (
 	"strings"
 )
 
+type (
+	wC   = whereCond
+	wLC  = whereLikeCond
+	wITC = whereInstrCond
+	wIC  = whereInCond
+	wBAC = whereBetweenAndCond
+)
+
 var (
-	Eq         = func(c sgen.Column, v interface{}) sgen.Generator { return &whereCond{c, "=", v} }
-	Gt         = func(c sgen.Column, v interface{}) sgen.Generator { return &whereCond{c, ">", v} }
-	GtEq       = func(c sgen.Column, v interface{}) sgen.Generator { return &whereCond{c, ">=", v} }
-	Lt         = func(c sgen.Column, v interface{}) sgen.Generator { return &whereCond{c, "<", v} }
-	LtEq       = func(c sgen.Column, v interface{}) sgen.Generator { return &whereCond{c, "<=", v} }
-	Like       = func(c sgen.Column, v interface{}) sgen.Generator { return &whereLikeCond{c, "%", "%", v} }
-	LeftLike   = func(c sgen.Column, v interface{}) sgen.Generator { return &whereLikeCond{c, "%", "", v} }
-	RightLike  = func(c sgen.Column, v interface{}) sgen.Generator { return &whereLikeCond{c, "", "%", v} }
-	Instr      = func(c sgen.Column, v interface{}) sgen.Generator { return &whereInstr{c, v} }
-	In         = func(c sgen.Column, vs ...interface{}) sgen.Generator { return &whereInCond{c, vs} }
-	BetweenAnd = func(c sgen.Column, l, r interface{}) sgen.Generator { return &whereBetweenAndCond{c, l, r} }
+	Gen        = func(gs ...sgen.Ge) sgen.Ge { return sgen.NewJoiner(gs, "", " WHERE", "", false) }
+	And        = func(g sgen.Ge) sgen.Ge { return sgen.NewJoiner([]sgen.Ge{g}, "", " AND", "", false) }
+	Or         = func(g sgen.Ge) sgen.Ge { return sgen.NewJoiner([]sgen.Ge{g}, "", " OR", "", false) }
+	AndGroup   = func(gs ...sgen.Ge) sgen.Ge { return sgen.NewJoiner(gs, "AND", "", "", true) }
+	OrGroup    = func(gs ...sgen.Ge) sgen.Ge { return sgen.NewJoiner(gs, "OR", "", "", true) }
+	Eq         = func(c sgen.C, v interface{}) sgen.Ge { return &wC{c, "=", v} }
+	Gt         = func(c sgen.C, v interface{}) sgen.Ge { return &wC{c, ">", v} }
+	GtEq       = func(c sgen.C, v interface{}) sgen.Ge { return &wC{c, ">=", v} }
+	Lt         = func(c sgen.C, v interface{}) sgen.Ge { return &wC{c, "<", v} }
+	LtEq       = func(c sgen.C, v interface{}) sgen.Ge { return &wC{c, "<=", v} }
+	Like       = func(c sgen.C, v interface{}) sgen.Ge { return &wLC{c, "%", "%", v} }
+	LeftLike   = func(c sgen.C, v interface{}) sgen.Ge { return &wLC{c, "%", "", v} }
+	RightLike  = func(c sgen.C, v interface{}) sgen.Ge { return &wLC{c, "", "%", v} }
+	Instr      = func(c sgen.C, v interface{}) sgen.Ge { return &wITC{c, v} }
+	In         = func(c sgen.C, vs ...interface{}) sgen.Ge { return &wIC{c, vs} }
+	BetweenAnd = func(c sgen.C, l, r interface{}) sgen.Ge { return &wBAC{c, l, r} }
 )
 
 // whereCond
 // $c $op ?
 // params: p
 type whereCond struct {
-	c  sgen.Column
+	c  sgen.C
 	op string
 	p  interface{}
 }
@@ -33,7 +46,7 @@ type whereCond struct {
 // $c LIKE CONCAT(l, ? ,r)
 // params : p
 type whereLikeCond struct {
-	c sgen.Column
+	c sgen.C
 	l string
 	r string
 	p interface{}
@@ -43,7 +56,7 @@ type whereLikeCond struct {
 // $c BETWEEN ? AND ?
 // params : l, r
 type whereBetweenAndCond struct {
-	c sgen.Column
+	c sgen.C
 	l interface{}
 	r interface{}
 }
@@ -52,15 +65,15 @@ type whereBetweenAndCond struct {
 // $c IN (?...)
 // params : vs
 type whereInCond struct {
-	c  sgen.Column
+	c  sgen.C
 	ps []interface{}
 }
 
-// whereInset
+// whereInstrCond
 // INSTR($c, ?) > 0
 // params : vs
-type whereInstr struct {
-	c sgen.Column
+type whereInstrCond struct {
+	c sgen.C
 	p interface{}
 }
 
@@ -80,6 +93,6 @@ func (w *whereInCond) SQL() (string, []interface{}) {
 	return fmt.Sprintf(" (%s IN (%s)) ", w.c, strings.TrimLeft(strings.Repeat(",?", len(w.ps)), ",")), w.ps
 }
 
-func (w *whereInstr) SQL() (string, []interface{}) {
+func (w *whereInstrCond) SQL() (string, []interface{}) {
 	return fmt.Sprintf(" (INSTR(%s, ?) > 0) ", w.c), []interface{}{w.p}
 }
