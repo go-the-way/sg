@@ -6,9 +6,8 @@ import (
 )
 
 func TestColumn(t *testing.T) {
-	test := func(col string, cc string) {
-		getSql, getPs := C(col).SQL()
-		TestEqual(t, getSql, cc, getPs, nil)
+	test := func(col string, except string) {
+		TestEqual(t, C(col), except, nil)
 	}
 	test("hello", "hello")
 	test("hello1", "hello1")
@@ -17,12 +16,32 @@ func TestColumn(t *testing.T) {
 	test("hello4", "hello4")
 }
 
+func TestTable(t *testing.T) {
+	test := func(col string, except string) {
+		TestEqual(t, T(col), except, nil)
+	}
+	test("table", "table")
+	test("table2", "table2")
+	test("table3", "table3")
+	test("table4", "table4")
+	test("table5", "table5")
+}
+
 func TestCEqColumn(t *testing.T) {
 	cn := "hello"
 	c := C(cn)
 	col := Column(cn)
 	if !reflect.DeepEqual(c, col) {
 		t.Fatalf("C[%v] is an alias for Column[%v], but not equals", c, col)
+	}
+}
+
+func TestTEqTable(t *testing.T) {
+	cn := "table"
+	c := T(cn)
+	col := Table(cn)
+	if !reflect.DeepEqual(c, col) {
+		t.Fatalf("T[%v] is an alias for Table[%v], but not equals", c, col)
 	}
 }
 
