@@ -1,5 +1,5 @@
 package sgen
 
 var (
-	Select = func(gs ...Generator) Ge { return NewJoiner(gs, ", ", "SELECT ", "", false) }
+	Select = func(gs ...Ge) Ge { return NewJoiner(gs, ", ", "SELECT ", "", false) }
 )
