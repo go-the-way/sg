@@ -19,7 +19,8 @@ func TestSingleEqual(t *testing.T, except, v interface{}) {
 	t.Logf("%v except = [%v] get get = [%v]\n", t.Name(), except, v)
 }
 
-func TestEqual(t *testing.T, getSql, exceptSql string, getPs, exceptPs []interface{}) {
+func TestEqual(t *testing.T, g Generator, exceptSql string, exceptPs []interface{}) {
+	getSql, getPs := g.SQL()
 	if getSql != exceptSql {
 		t.Fatalf("%v except sql = [%v] but get sql = [%v]\n", t.Name(), exceptSql, getSql)
 	}
