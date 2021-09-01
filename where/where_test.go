@@ -7,33 +7,28 @@ import (
 )
 
 func testWhere(t *testing.T, c sgen.Column, g sgen.Ge, op string, v interface{}) {
-	getSql, getPs := g.SQL()
 	exceptSql, exceptPs := fmt.Sprintf(" (%s %s ?) ", c, op), []interface{}{v}
-	sgen.TestEqual(t, getSql, exceptSql, getPs, exceptPs)
+	sgen.TestEqual(t, g, exceptSql, exceptPs)
 }
 
 func testWhereLike(t *testing.T, c sgen.Column, g sgen.Ge, l, r string, v interface{}) {
-	getSql, getPs := g.SQL()
 	exceptSql, exceptPs := fmt.Sprintf(" (%s LIKE CONCAT('%s', ?, '%s')) ", c, l, r), []interface{}{v}
-	sgen.TestEqual(t, getSql, exceptSql, getPs, exceptPs)
+	sgen.TestEqual(t, g, exceptSql, exceptPs)
 }
 
 func testWhereInstr(t *testing.T, c sgen.Column, g sgen.Ge, v interface{}) {
-	getSql, getPs := g.SQL()
 	exceptSql, exceptPs := fmt.Sprintf(" (INSTR(%s, ?) > 0) ", c), []interface{}{v}
-	sgen.TestEqual(t, getSql, exceptSql, getPs, exceptPs)
+	sgen.TestEqual(t, g, exceptSql, exceptPs)
 }
 
 func testWhereIn(t *testing.T, c sgen.Column, g sgen.Ge, inStr string, ps ...interface{}) {
-	getSql, getPs := g.SQL()
 	exceptSql, exceptPs := fmt.Sprintf(" (%s IN (%s)) ", c, inStr), ps
-	sgen.TestEqual(t, getSql, exceptSql, getPs, exceptPs)
+	sgen.TestEqual(t, g, exceptSql, exceptPs)
 }
 
 func testWhereBetweenAnd(t *testing.T, c sgen.Column, g sgen.Ge, ps ...interface{}) {
-	getSql, getPs := g.SQL()
 	exceptSql, exceptPs := fmt.Sprintf(" (%s BETWEEN ? AND ?) ", c), ps
-	sgen.TestEqual(t, getSql, exceptSql, getPs, exceptPs)
+	sgen.TestEqual(t, g, exceptSql, exceptPs)
 }
 
 func TestEq(t *testing.T) {
@@ -237,8 +232,7 @@ func TestBetweenAnd(t *testing.T) {
 
 func TestGen(t *testing.T) {
 	test := func(g sgen.Ge, exceptSql string, exceptPs []interface{}) {
-		getSql, getPs := g.SQL()
-		sgen.TestEqual(t, getSql, exceptSql, getPs, exceptPs)
+		sgen.TestEqual(t, g, exceptSql, exceptPs)
 	}
 	test(Gen(AndGroup(Eq("a", 1))), " WHERE( (a = ?) )", []interface{}{1})
 	test(Gen(AndGroup(Eq("a", 1), Eq("b", 100))), " WHERE( (a = ?) AND (b = ?) )", []interface{}{1, 100})
