@@ -1,38 +1,37 @@
-package where
+package sgen
 
 import (
 	"fmt"
-	"github.com/billcoding/sgen"
 	"testing"
 )
 
-func testWhere(t *testing.T, c sgen.Column, g sgen.Ge, op string, v interface{}) {
-	exceptSql, exceptPs := fmt.Sprintf(" (%s %s ?) ", c, op), []interface{}{v}
-	sgen.TestEqual(t, g, exceptSql, exceptPs)
+func testWhere(t *testing.T, c Column, g Ge, op string, v interface{}) {
+	exceptSql, exceptPs := fmt.Sprintf("(%s %s ?)", c, op), []interface{}{v}
+	TestEqual(t, g, exceptSql, exceptPs)
 }
 
-func testWhereLike(t *testing.T, c sgen.Column, g sgen.Ge, l, r string, v interface{}) {
-	exceptSql, exceptPs := fmt.Sprintf(" (%s LIKE CONCAT('%s', ?, '%s')) ", c, l, r), []interface{}{v}
-	sgen.TestEqual(t, g, exceptSql, exceptPs)
+func testWhereLike(t *testing.T, c Column, g Ge, l, r string, v interface{}) {
+	exceptSql, exceptPs := fmt.Sprintf("(%s LIKE CONCAT('%s', ?, '%s'))", c, l, r), []interface{}{v}
+	TestEqual(t, g, exceptSql, exceptPs)
 }
 
-func testWhereInstr(t *testing.T, c sgen.Column, g sgen.Ge, v interface{}) {
-	exceptSql, exceptPs := fmt.Sprintf(" (INSTR(%s, ?) > 0) ", c), []interface{}{v}
-	sgen.TestEqual(t, g, exceptSql, exceptPs)
+func testWhereInstr(t *testing.T, c Column, g Ge, v interface{}) {
+	exceptSql, exceptPs := fmt.Sprintf("(INSTR(%s, ?) > 0)", c), []interface{}{v}
+	TestEqual(t, g, exceptSql, exceptPs)
 }
 
-func testWhereIn(t *testing.T, c sgen.Column, g sgen.Ge, inStr string, ps ...interface{}) {
-	exceptSql, exceptPs := fmt.Sprintf(" (%s IN (%s)) ", c, inStr), ps
-	sgen.TestEqual(t, g, exceptSql, exceptPs)
+func testWhereIn(t *testing.T, c Column, g Ge, inStr string, ps ...interface{}) {
+	exceptSql, exceptPs := fmt.Sprintf("(%s IN (%s))", c, inStr), ps
+	TestEqual(t, g, exceptSql, exceptPs)
 }
 
-func testWhereBetweenAnd(t *testing.T, c sgen.Column, g sgen.Ge, ps ...interface{}) {
-	exceptSql, exceptPs := fmt.Sprintf(" (%s BETWEEN ? AND ?) ", c), ps
-	sgen.TestEqual(t, g, exceptSql, exceptPs)
+func testWhereBetweenAnd(t *testing.T, c Column, g Ge, ps ...interface{}) {
+	exceptSql, exceptPs := fmt.Sprintf("(%s BETWEEN ? AND ?)", c), ps
+	TestEqual(t, g, exceptSql, exceptPs)
 }
 
 func TestEq(t *testing.T) {
-	c := sgen.Column("col")
+	c := Column("col")
 	op := "="
 	testWhere(t, c, Eq(c, rune(100)), op, rune(100))
 	testWhere(t, c, Eq(c, 'c'), op, 'c')
@@ -50,7 +49,7 @@ func TestEq(t *testing.T) {
 }
 
 func TestGt(t *testing.T) {
-	c := sgen.Column("col")
+	c := Column("col")
 	op := ">"
 	testWhere(t, c, Gt(c, rune(100)), op, rune(100))
 	testWhere(t, c, Gt(c, 'c'), op, 'c')
@@ -68,7 +67,7 @@ func TestGt(t *testing.T) {
 }
 
 func TestGtEq(t *testing.T) {
-	c := sgen.Column("col")
+	c := Column("col")
 	op := ">="
 	testWhere(t, c, GtEq(c, rune(100)), op, rune(100))
 	testWhere(t, c, GtEq(c, 'c'), op, 'c')
@@ -86,7 +85,7 @@ func TestGtEq(t *testing.T) {
 }
 
 func TestLt(t *testing.T) {
-	c := sgen.Column("col")
+	c := Column("col")
 	op := "<"
 	testWhere(t, c, Lt(c, rune(100)), op, rune(100))
 	testWhere(t, c, Lt(c, 'c'), op, 'c')
@@ -104,7 +103,7 @@ func TestLt(t *testing.T) {
 }
 
 func TestLtEq(t *testing.T) {
-	c := sgen.Column("col")
+	c := Column("col")
 	op := "<="
 	testWhere(t, c, LtEq(c, rune(100)), op, rune(100))
 	testWhere(t, c, LtEq(c, 'c'), op, 'c')
@@ -122,7 +121,7 @@ func TestLtEq(t *testing.T) {
 }
 
 func TestLike(t *testing.T) {
-	c := sgen.Column("col")
+	c := Column("col")
 	l := "%"
 	r := "%"
 	testWhereLike(t, c, Like(c, rune(100)), l, r, rune(100))
@@ -141,7 +140,7 @@ func TestLike(t *testing.T) {
 }
 
 func TestLeftLike(t *testing.T) {
-	c := sgen.Column("col")
+	c := Column("col")
 	l := "%"
 	r := ""
 	testWhereLike(t, c, LeftLike(c, rune(100)), l, r, rune(100))
@@ -160,7 +159,7 @@ func TestLeftLike(t *testing.T) {
 }
 
 func TestLeftRight(t *testing.T) {
-	c := sgen.Column("col")
+	c := Column("col")
 	l := ""
 	r := "%"
 	testWhereLike(t, c, RightLike(c, rune(100)), l, r, rune(100))
@@ -179,7 +178,7 @@ func TestLeftRight(t *testing.T) {
 }
 
 func TestInstr(t *testing.T) {
-	c := sgen.Column("col")
+	c := Column("col")
 	testWhereInstr(t, c, Instr(c, rune(100)), rune(100))
 	testWhereInstr(t, c, Instr(c, 'c'), 'c')
 	testWhereInstr(t, c, Instr(c, byte(100)), byte(100))
@@ -196,7 +195,7 @@ func TestInstr(t *testing.T) {
 }
 
 func TestIn(t *testing.T) {
-	c := sgen.Column("col")
+	c := Column("col")
 	inStr := "?"
 	testWhereIn(t, c, In(c, rune(100)), inStr, rune(100))
 	testWhereIn(t, c, In(c, 'c'), inStr, 'c')
@@ -214,7 +213,7 @@ func TestIn(t *testing.T) {
 }
 
 func TestBetweenAnd(t *testing.T) {
-	c := sgen.Column("col")
+	c := Column("col")
 	testWhereBetweenAnd(t, c, BetweenAnd(c, rune(100), rune(100)), rune(100), rune(100))
 	testWhereBetweenAnd(t, c, BetweenAnd(c, 'c', 'c'), 'c', 'c')
 	testWhereBetweenAnd(t, c, BetweenAnd(c, byte(100), byte(100)), byte(100), byte(100))
@@ -230,49 +229,76 @@ func TestBetweenAnd(t *testing.T) {
 	testWhereBetweenAnd(t, c, BetweenAnd(c, "hole hole", "hole hole"), "hole hole", "hole hole")
 }
 
-func TestGen(t *testing.T) {
-	test := func(g sgen.Ge, exceptSql string, exceptPs []interface{}) {
-		sgen.TestEqual(t, g, exceptSql, exceptPs)
-	}
-	test(Gen(AndGroup(Eq("a", 1))), " WHERE( (a = ?) )", []interface{}{1})
-	test(Gen(AndGroup(Eq("a", 1), Eq("b", 100))), " WHERE( (a = ?) AND (b = ?) )", []interface{}{1, 100})
-	test(Gen(AndGroup(Gt("a", 1))), " WHERE( (a > ?) )", []interface{}{1})
-	test(Gen(AndGroup(Gt("a", 1), Gt("b", 100))), " WHERE( (a > ?) AND (b > ?) )", []interface{}{1, 100})
-	test(Gen(AndGroup(GtEq("a", 1))), " WHERE( (a >= ?) )", []interface{}{1})
-	test(Gen(AndGroup(GtEq("a", 1), GtEq("b", 100))), " WHERE( (a >= ?) AND (b >= ?) )", []interface{}{1, 100})
-	test(Gen(AndGroup(Lt("a", 1))), " WHERE( (a < ?) )", []interface{}{1})
-	test(Gen(AndGroup(Lt("a", 1), Lt("b", 100))), " WHERE( (a < ?) AND (b < ?) )", []interface{}{1, 100})
-	test(Gen(AndGroup(LtEq("a", 1))), " WHERE( (a <= ?) )", []interface{}{1})
-	test(Gen(AndGroup(LtEq("a", 1), LtEq("b", 100))), " WHERE( (a <= ?) AND (b <= ?) )", []interface{}{1, 100})
-	test(Gen(AndGroup(Like("a", 1))), " WHERE( (a LIKE CONCAT('%', ?, '%')) )", []interface{}{1})
-	test(Gen(AndGroup(Like("a", 1), Like("b", 100))), " WHERE( (a LIKE CONCAT('%', ?, '%')) AND (b LIKE CONCAT('%', ?, '%')) )", []interface{}{1, 100})
-	test(Gen(AndGroup(LeftLike("a", 1))), " WHERE( (a LIKE CONCAT('%', ?, '')) )", []interface{}{1})
-	test(Gen(AndGroup(LeftLike("a", 1), LeftLike("b", 100))), " WHERE( (a LIKE CONCAT('%', ?, '')) AND (b LIKE CONCAT('%', ?, '')) )", []interface{}{1, 100})
-	test(Gen(AndGroup(RightLike("a", 1))), " WHERE( (a LIKE CONCAT('', ?, '%')) )", []interface{}{1})
-	test(Gen(AndGroup(RightLike("a", 1), RightLike("b", 100))), " WHERE( (a LIKE CONCAT('', ?, '%')) AND (b LIKE CONCAT('', ?, '%')) )", []interface{}{1, 100})
-	test(Gen(AndGroup(In("a", 1, 100))), " WHERE( (a IN (?,?)) )", []interface{}{1, 100})
-	test(Gen(AndGroup(In("a", 1, 100), In("b", 100, 200))), " WHERE( (a IN (?,?)) AND (b IN (?,?)) )", []interface{}{1, 100, 100, 200})
-	test(Gen(AndGroup(Instr("a", 1))), " WHERE( (INSTR(a, ?) > 0) )", []interface{}{1})
-	test(Gen(AndGroup(Instr("a", 1), Instr("b", 100))), " WHERE( (INSTR(a, ?) > 0) AND (INSTR(b, ?) > 0) )", []interface{}{1, 100})
+func TestAnd(t *testing.T) {
+	TestEqual(t, And(Eq("c", 100)), `AND (c = ?)`, []interface{}{100})
+	TestEqual(t, And(Gt("c", 100)), `AND (c > ?)`, []interface{}{100})
+	TestEqual(t, And(GtEq("c", 100)), `AND (c >= ?)`, []interface{}{100})
+	TestEqual(t, And(Lt("c", 100)), `AND (c < ?)`, []interface{}{100})
+	TestEqual(t, And(LtEq("c", 100)), `AND (c <= ?)`, []interface{}{100})
+	TestEqual(t, And(Like("c", 100)), `AND (c LIKE CONCAT('%', ?, '%'))`, []interface{}{100})
+	TestEqual(t, And(LeftLike("c", 100)), `AND (c LIKE CONCAT('%', ?, ''))`, []interface{}{100})
+	TestEqual(t, And(RightLike("c", 100)), `AND (c LIKE CONCAT('', ?, '%'))`, []interface{}{100})
+	TestEqual(t, And(In("c", 100)), `AND (c IN (?))`, []interface{}{100})
+	TestEqual(t, And(In("c", 100, 200)), `AND (c IN (?, ?))`, []interface{}{100, 200})
+	TestEqual(t, And(In("c", 100, 200, 300)), `AND (c IN (?, ?, ?))`, []interface{}{100, 200, 300})
+	TestEqual(t, And(Instr("c", 100)), `AND (INSTR(c, ?) > 0)`, []interface{}{100})
+}
 
-	test(Gen(OrGroup(Eq("a", 1))), " WHERE( (a = ?) )", []interface{}{1})
-	test(Gen(OrGroup(Eq("a", 1), Eq("b", 100))), " WHERE( (a = ?) OR (b = ?) )", []interface{}{1, 100})
-	test(Gen(OrGroup(Gt("a", 1))), " WHERE( (a > ?) )", []interface{}{1})
-	test(Gen(OrGroup(Gt("a", 1), Gt("b", 100))), " WHERE( (a > ?) OR (b > ?) )", []interface{}{1, 100})
-	test(Gen(OrGroup(GtEq("a", 1))), " WHERE( (a >= ?) )", []interface{}{1})
-	test(Gen(OrGroup(GtEq("a", 1), GtEq("b", 100))), " WHERE( (a >= ?) OR (b >= ?) )", []interface{}{1, 100})
-	test(Gen(OrGroup(Lt("a", 1))), " WHERE( (a < ?) )", []interface{}{1})
-	test(Gen(OrGroup(Lt("a", 1), Lt("b", 100))), " WHERE( (a < ?) OR (b < ?) )", []interface{}{1, 100})
-	test(Gen(OrGroup(LtEq("a", 1))), " WHERE( (a <= ?) )", []interface{}{1})
-	test(Gen(OrGroup(LtEq("a", 1), LtEq("b", 100))), " WHERE( (a <= ?) OR (b <= ?) )", []interface{}{1, 100})
-	test(Gen(OrGroup(Like("a", 1))), " WHERE( (a LIKE CONCAT('%', ?, '%')) )", []interface{}{1})
-	test(Gen(OrGroup(Like("a", 1), Like("b", 100))), " WHERE( (a LIKE CONCAT('%', ?, '%')) OR (b LIKE CONCAT('%', ?, '%')) )", []interface{}{1, 100})
-	test(Gen(OrGroup(LeftLike("a", 1))), " WHERE( (a LIKE CONCAT('%', ?, '')) )", []interface{}{1})
-	test(Gen(OrGroup(LeftLike("a", 1), LeftLike("b", 100))), " WHERE( (a LIKE CONCAT('%', ?, '')) OR (b LIKE CONCAT('%', ?, '')) )", []interface{}{1, 100})
-	test(Gen(OrGroup(RightLike("a", 1))), " WHERE( (a LIKE CONCAT('', ?, '%')) )", []interface{}{1})
-	test(Gen(OrGroup(RightLike("a", 1), RightLike("b", 100))), " WHERE( (a LIKE CONCAT('', ?, '%')) OR (b LIKE CONCAT('', ?, '%')) )", []interface{}{1, 100})
-	test(Gen(OrGroup(In("a", 1, 100))), " WHERE( (a IN (?,?)) )", []interface{}{1, 100})
-	test(Gen(OrGroup(In("a", 1, 100), In("b", 100, 200))), " WHERE( (a IN (?,?)) OR (b IN (?,?)) )", []interface{}{1, 100, 100, 200})
-	test(Gen(OrGroup(Instr("a", 1))), " WHERE( (INSTR(a, ?) > 0) )", []interface{}{1})
-	test(Gen(OrGroup(Instr("a", 1), Instr("b", 100))), " WHERE( (INSTR(a, ?) > 0) OR (INSTR(b, ?) > 0) )", []interface{}{1, 100})
+func TestOr(t *testing.T) {
+	TestEqual(t, Or(Eq("c", 100)), `OR (c = ?)`, []interface{}{100})
+	TestEqual(t, Or(Gt("c", 100)), `OR (c > ?)`, []interface{}{100})
+	TestEqual(t, Or(GtEq("c", 100)), `OR (c >= ?)`, []interface{}{100})
+	TestEqual(t, Or(Lt("c", 100)), `OR (c < ?)`, []interface{}{100})
+	TestEqual(t, Or(LtEq("c", 100)), `OR (c <= ?)`, []interface{}{100})
+	TestEqual(t, Or(Like("c", 100)), `OR (c LIKE CONCAT('%', ?, '%'))`, []interface{}{100})
+	TestEqual(t, Or(LeftLike("c", 100)), `OR (c LIKE CONCAT('%', ?, ''))`, []interface{}{100})
+	TestEqual(t, Or(RightLike("c", 100)), `OR (c LIKE CONCAT('', ?, '%'))`, []interface{}{100})
+	TestEqual(t, Or(In("c", 100)), `OR (c IN (?))`, []interface{}{100})
+	TestEqual(t, Or(In("c", 100, 200)), `OR (c IN (?, ?))`, []interface{}{100, 200})
+	TestEqual(t, Or(In("c", 100, 200, 300)), `OR (c IN (?, ?, ?))`, []interface{}{100, 200, 300})
+	TestEqual(t, Or(Instr("c", 100)), `OR (INSTR(c, ?) > 0)`, []interface{}{100})
+}
+
+func TestWhere(t *testing.T) {
+	TestEqual(t, Where(AndGroup(Eq("a", 1))), "WHERE ((a = ?))", []interface{}{1})
+	TestEqual(t, Where(AndGroup(Eq("a", 1), Eq("b", 100))), "WHERE ((a = ?) AND (b = ?))", []interface{}{1, 100})
+	TestEqual(t, Where(AndGroup(Gt("a", 1))), "WHERE ((a > ?))", []interface{}{1})
+	TestEqual(t, Where(AndGroup(Gt("a", 1), Gt("b", 100))), "WHERE ((a > ?) AND (b > ?))", []interface{}{1, 100})
+	TestEqual(t, Where(AndGroup(GtEq("a", 1))), "WHERE ((a >= ?))", []interface{}{1})
+	TestEqual(t, Where(AndGroup(GtEq("a", 1), GtEq("b", 100))), "WHERE ((a >= ?) AND (b >= ?))", []interface{}{1, 100})
+	TestEqual(t, Where(AndGroup(Lt("a", 1))), "WHERE ((a < ?))", []interface{}{1})
+	TestEqual(t, Where(AndGroup(Lt("a", 1), Lt("b", 100))), "WHERE ((a < ?) AND (b < ?))", []interface{}{1, 100})
+	TestEqual(t, Where(AndGroup(LtEq("a", 1))), "WHERE ((a <= ?))", []interface{}{1})
+	TestEqual(t, Where(AndGroup(LtEq("a", 1), LtEq("b", 100))), "WHERE ((a <= ?) AND (b <= ?))", []interface{}{1, 100})
+	TestEqual(t, Where(AndGroup(Like("a", 1))), "WHERE ((a LIKE CONCAT('%', ?, '%')))", []interface{}{1})
+	TestEqual(t, Where(AndGroup(Like("a", 1), Like("b", 100))), "WHERE ((a LIKE CONCAT('%', ?, '%')) AND (b LIKE CONCAT('%', ?, '%')))", []interface{}{1, 100})
+	TestEqual(t, Where(AndGroup(LeftLike("a", 1))), "WHERE ((a LIKE CONCAT('%', ?, '')))", []interface{}{1})
+	TestEqual(t, Where(AndGroup(LeftLike("a", 1), LeftLike("b", 100))), "WHERE ((a LIKE CONCAT('%', ?, '')) AND (b LIKE CONCAT('%', ?, '')))", []interface{}{1, 100})
+	TestEqual(t, Where(AndGroup(RightLike("a", 1))), "WHERE ((a LIKE CONCAT('', ?, '%')))", []interface{}{1})
+	TestEqual(t, Where(AndGroup(RightLike("a", 1), RightLike("b", 100))), "WHERE ((a LIKE CONCAT('', ?, '%')) AND (b LIKE CONCAT('', ?, '%')))", []interface{}{1, 100})
+	TestEqual(t, Where(AndGroup(In("a", 1, 100))), "WHERE ((a IN (?, ?)))", []interface{}{1, 100})
+	TestEqual(t, Where(AndGroup(In("a", 1, 100), In("b", 100, 200))), "WHERE ((a IN (?, ?)) AND (b IN (?, ?)))", []interface{}{1, 100, 100, 200})
+	TestEqual(t, Where(AndGroup(Instr("a", 1))), "WHERE ((INSTR(a, ?) > 0))", []interface{}{1})
+	TestEqual(t, Where(AndGroup(Instr("a", 1), Instr("b", 100))), "WHERE ((INSTR(a, ?) > 0) AND (INSTR(b, ?) > 0))", []interface{}{1, 100})
+
+	TestEqual(t, Where(OrGroup(Eq("a", 1))), "WHERE ((a = ?))", []interface{}{1})
+	TestEqual(t, Where(OrGroup(Eq("a", 1), Eq("b", 100))), "WHERE ((a = ?) OR (b = ?))", []interface{}{1, 100})
+	TestEqual(t, Where(OrGroup(Gt("a", 1))), "WHERE ((a > ?))", []interface{}{1})
+	TestEqual(t, Where(OrGroup(Gt("a", 1), Gt("b", 100))), "WHERE ((a > ?) OR (b > ?))", []interface{}{1, 100})
+	TestEqual(t, Where(OrGroup(GtEq("a", 1))), "WHERE ((a >= ?))", []interface{}{1})
+	TestEqual(t, Where(OrGroup(GtEq("a", 1), GtEq("b", 100))), "WHERE ((a >= ?) OR (b >= ?))", []interface{}{1, 100})
+	TestEqual(t, Where(OrGroup(Lt("a", 1))), "WHERE ((a < ?))", []interface{}{1})
+	TestEqual(t, Where(OrGroup(Lt("a", 1), Lt("b", 100))), "WHERE ((a < ?) OR (b < ?))", []interface{}{1, 100})
+	TestEqual(t, Where(OrGroup(LtEq("a", 1))), "WHERE ((a <= ?))", []interface{}{1})
+	TestEqual(t, Where(OrGroup(LtEq("a", 1), LtEq("b", 100))), "WHERE ((a <= ?) OR (b <= ?))", []interface{}{1, 100})
+	TestEqual(t, Where(OrGroup(Like("a", 1))), "WHERE ((a LIKE CONCAT('%', ?, '%')))", []interface{}{1})
+	TestEqual(t, Where(OrGroup(Like("a", 1), Like("b", 100))), "WHERE ((a LIKE CONCAT('%', ?, '%')) OR (b LIKE CONCAT('%', ?, '%')))", []interface{}{1, 100})
+	TestEqual(t, Where(OrGroup(LeftLike("a", 1))), "WHERE ((a LIKE CONCAT('%', ?, '')))", []interface{}{1})
+	TestEqual(t, Where(OrGroup(LeftLike("a", 1), LeftLike("b", 100))), "WHERE ((a LIKE CONCAT('%', ?, '')) OR (b LIKE CONCAT('%', ?, '')))", []interface{}{1, 100})
+	TestEqual(t, Where(OrGroup(RightLike("a", 1))), "WHERE ((a LIKE CONCAT('', ?, '%')))", []interface{}{1})
+	TestEqual(t, Where(OrGroup(RightLike("a", 1), RightLike("b", 100))), "WHERE ((a LIKE CONCAT('', ?, '%')) OR (b LIKE CONCAT('', ?, '%')))", []interface{}{1, 100})
+	TestEqual(t, Where(OrGroup(In("a", 1, 100))), "WHERE ((a IN (?, ?)))", []interface{}{1, 100})
+	TestEqual(t, Where(OrGroup(In("a", 1, 100), In("b", 100, 200))), "WHERE ((a IN (?, ?)) OR (b IN (?, ?)))", []interface{}{1, 100, 100, 200})
+	TestEqual(t, Where(OrGroup(Instr("a", 1))), "WHERE ((INSTR(a, ?) > 0))", []interface{}{1})
+	TestEqual(t, Where(OrGroup(Instr("a", 1), Instr("b", 100))), "WHERE ((INSTR(a, ?) > 0) OR (INSTR(b, ?) > 0))", []interface{}{1, 100})
 }
