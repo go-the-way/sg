@@ -7,7 +7,7 @@ var (
 		}
 		return NewJoiner(
 			[]Ge{NewJoiner(dgs, ", ", "DELETE ", "", false),
-				NewJoiner(fgs, ", ", " FROM ", "", false)}, "", "", "", false,
+				NewJoiner(fgs, ", ", "FROM ", "", false)}, " ", "", "", false,
 		)
 	}
 	DeleteFrom = func(gs ...Ge) Ge { return NewJoiner(gs, ", ", "DELETE FROM ", "", false) }
