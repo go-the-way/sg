@@ -3,12 +3,12 @@ package sgen
 import "fmt"
 
 var (
-	Alias = func(g Generator, as string) Generator { return &alias{g, as} }
+	Alias = func(g Ge, as string) Ge { return &alias{g, as} }
 	As    = Alias
 )
 
 type alias struct {
-	g     Generator
+	g     Ge
 	alias string
 }
 
