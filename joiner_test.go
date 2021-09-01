@@ -28,13 +28,11 @@ func TestNewJoinerWithAppend(t *testing.T) {
 func TestJoiner_SQL(t *testing.T) {
 	{
 		joiner := NewJoiner([]Generator{&geImpl{}, &geImpl{}}, ",", "prefix ", " suffix", true)
-		getSql, getPs := joiner.SQL()
-		TestEqual(t, getSql, "prefix (geImpl,geImpl) suffix", getPs, []interface{}{})
+		TestEqual(t, joiner, "prefix (geImpl,geImpl) suffix", []interface{}{})
 	}
 
 	{
 		joiner := NewJoinerWithAppend([]Generator{&geImpl{}, &geImpl{}}, ",", "prefix ", " suffix", " append", true)
-		getSql, getPs := joiner.SQL()
-		TestEqual(t, getSql, "prefix (geImpl append,geImpl append) suffix", getPs, []interface{}{})
+		TestEqual(t, joiner, "prefix (geImpl append,geImpl append) suffix", []interface{}{})
 	}
 }
