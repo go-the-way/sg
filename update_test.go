@@ -19,3 +19,9 @@ func TestUpdateAlias(t *testing.T) {
 	TestEqual(t, Update(Alias(T("table_a"), "ta"), Alias(T("table_b"), "tb")), `UPDATE table_a AS ta, table_b AS tb`, []interface{}{})
 	TestEqual(t, Update(Alias(T("table_a"), "ta"), Alias(T("table_b"), "tb"), Alias(T("table_c"), "tc")), `UPDATE table_a AS ta, table_b AS tb, table_c AS tc`, []interface{}{})
 }
+
+func TestSet(t *testing.T) {
+	TestEqual(t, Set(C("t.a = t.b")), `SET t.a = t.b`, []interface{}{})
+	TestEqual(t, Set(C("t.a = t.b"), SetEq("t.c", 100)), `SET t.a = t.b, t.c = ?`, []interface{}{100})
+	TestEqual(t, Set(C("t.a = t.b"), C("t.xx = t.yy"), SetEq("t.c", 100)), `SET t.a = t.b, t.xx = t.yy, t.c = ?`, []interface{}{100})
+}
