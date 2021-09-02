@@ -15,3 +15,11 @@ func TestDeleteFrom(t *testing.T) {
 	TestEqual(t, DeleteFrom(T("table_a"), T("table_b")), `DELETE FROM table_a, table_b`, []interface{}{})
 	TestEqual(t, DeleteFrom(T("table_a"), T("table_b"), T("table_c")), `DELETE FROM table_a, table_b, table_c`, []interface{}{})
 }
+
+func TestDeleteBuilder(t *testing.T) {
+	builder := DeleteBuilder().
+		Delete(T("t1.*")).
+		From(As(C("table1"), "t1"), As(C("table2"), "t2")).
+		Where(AndGroup(Gt("t1.col1", 100), Gt("t2.col2", 200)))
+	TestEqual(t, builder, `DELETE t1.* FROM table1 AS t1, table2 AS t2 WHERE ((t1.col1 > ?) AND (t2.col2 > ?))`, []interface{}{100, 200})
+}
