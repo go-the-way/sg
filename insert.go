@@ -6,4 +6,6 @@ var (
 			NewJoiner(gs, ", ", "", "", true)},
 			" ", "", "", false)
 	}
+
+	Values = func(gs ...Ge) Ge { return NewJoiner(gs, ", ", "VALUES", "", true) }
 )
