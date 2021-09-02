@@ -26,11 +26,11 @@ func TestSet(t *testing.T) {
 	TestEqual(t, Set(C("t.a = t.b"), C("t.xx = t.yy"), SetEq("t.c", 100)), `SET t.a = t.b, t.xx = t.yy, t.c = ?`, []interface{}{100})
 }
 func TestUpdateBuilder(t *testing.T) {
-	sb := UpdateBuilder().
+	builder := UpdateBuilder().
 		Update(As(T("table_person"), "t")).
 		Join(LeftJoin(As(T("table_a"), "ta"), On(C("t.col1 = ta.col1")))).
 		Set(SetEq("col1", 100), SetEq("col2", 200)).
 		Where(AndGroup(Eq("a", 100), Eq("b", 200)))
-	TestEqual(t, sb, `UPDATE table_person AS t LEFT JOIN table_a AS ta ON (t.col1 = ta.col1) SET col1 = ?, col2 = ? WHERE ((a = ?) AND (b = ?))`,
+	TestEqual(t, builder, `UPDATE table_person AS t LEFT JOIN table_a AS ta ON (t.col1 = ta.col1) SET col1 = ?, col2 = ? WHERE ((a = ?) AND (b = ?))`,
 		[]interface{}{100, 200, 100, 200})
 }

@@ -8,61 +8,61 @@ var (
 
 // updateBuilder
 /*
- A standard SELECT :
+ A standard UPDATE :
  UPDATE table AS t
  SET t.a = ?, t.b = ?, t.c = ?
  WHERE t.a > 0 AND t.b > 0
 **/
 type updateBuilder struct {
-	updates []Ge
-	joins   []Ge
-	sets    []Ge
-	wheres  []Ge
+	update []Ge
+	join   []Ge
+	set    []Ge
+	where  []Ge
 }
 
 func UpdateBuilder() *updateBuilder {
 	return &updateBuilder{
-		updates: []Ge{},
-		joins:   []Ge{},
-		sets:    []Ge{},
-		wheres:  []Ge{},
+		update: []Ge{},
+		join:   []Ge{},
+		set:    []Ge{},
+		where:  []Ge{},
 	}
 }
 
 func (ub *updateBuilder) Update(updates ...Ge) *updateBuilder {
-	ub.updates = append(ub.updates, updates...)
+	ub.update = append(ub.update, updates...)
 	return ub
 }
 
 func (ub *updateBuilder) Join(joins ...Ge) *updateBuilder {
-	ub.joins = append(ub.joins, joins...)
+	ub.join = append(ub.join, joins...)
 	return ub
 }
 
 func (ub *updateBuilder) Set(sets ...Ge) *updateBuilder {
-	ub.sets = append(ub.sets, sets...)
+	ub.set = append(ub.set, sets...)
 	return ub
 }
 
 func (ub *updateBuilder) Where(wheres ...Ge) *updateBuilder {
-	ub.wheres = append(ub.wheres, wheres...)
+	ub.where = append(ub.where, wheres...)
 	return ub
 }
 
 func (ub *updateBuilder) Clear() *updateBuilder {
-	ub.updates = []Ge{}
-	ub.joins = []Ge{}
-	ub.sets = []Ge{}
-	ub.wheres = []Ge{}
+	ub.update = []Ge{}
+	ub.join = []Ge{}
+	ub.set = []Ge{}
+	ub.where = []Ge{}
 	return ub
 }
 
 func (ub *updateBuilder) SQL() (string, []interface{}) {
 	joiner := NewJoiner([]Ge{
-		Update(ub.updates...),
-		NewJoiner(ub.joins, "", "", "", false),
-		Set(ub.sets...),
-		Where(ub.wheres...)}, " ", "", "", false)
+		Update(ub.update...),
+		NewJoiner(ub.join, "", "", "", false),
+		Set(ub.set...),
+		Where(ub.where...)}, " ", "", "", false)
 	return joiner.SQL()
 }
 
