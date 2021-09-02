@@ -11,6 +11,7 @@ package sgen
 type selectBuilder struct {
 	selects  []Ge
 	from     []Ge
+	joins    []Ge
 	wheres   []Ge
 	orderBys []Ge
 }
@@ -29,13 +30,18 @@ func (sb *selectBuilder) Select(selects ...Ge) *selectBuilder {
 	return sb
 }
 
-func (sb *selectBuilder) Where(wheres ...Ge) *selectBuilder {
-	sb.wheres = append(sb.wheres, wheres...)
+func (sb *selectBuilder) From(from ...Ge) *selectBuilder {
+	sb.from = append(sb.from, from...)
 	return sb
 }
 
-func (sb *selectBuilder) From(from ...Ge) *selectBuilder {
-	sb.from = append(sb.from, from...)
+func (sb *selectBuilder) Join(joins ...Ge) *selectBuilder {
+	sb.joins = append(sb.joins, joins...)
+	return sb
+}
+
+func (sb *selectBuilder) Where(wheres ...Ge) *selectBuilder {
+	sb.wheres = append(sb.wheres, wheres...)
 	return sb
 }
 
@@ -56,6 +62,7 @@ func (sb *selectBuilder) SQL() (string, []interface{}) {
 	joiner := NewJoiner([]Ge{
 		Select(sb.selects...),
 		From(sb.from...),
+		NewJoiner(sb.joins, "", "", "", false),
 		Where(sb.wheres...),
 		OrderBy(sb.orderBys...)}, " ", "", "", false)
 	return joiner.SQL()
