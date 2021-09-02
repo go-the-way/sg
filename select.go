@@ -23,65 +23,65 @@ var (
  ORDER BY t.a DESC, t.b ASC
 **/
 type selectBuilder struct {
-	selects  []Ge
-	from     []Ge
-	joins    []Ge
-	wheres   []Ge
-	orderBys []Ge
+	selects []Ge
+	from    []Ge
+	join    []Ge
+	where   []Ge
+	orderBy []Ge
 }
 
 func SelectBuilder() *selectBuilder {
 	return &selectBuilder{
-		selects:  []Ge{},
-		from:     []Ge{},
-		wheres:   []Ge{},
-		orderBys: []Ge{},
+		selects: []Ge{},
+		from:    []Ge{},
+		where:   []Ge{},
+		orderBy: []Ge{},
 	}
 }
 
-func (sb *selectBuilder) Select(selects ...Ge) *selectBuilder {
-	sb.selects = append(sb.selects, selects...)
-	return sb
+func (b *selectBuilder) Select(selects ...Ge) *selectBuilder {
+	b.selects = append(b.selects, selects...)
+	return b
 }
 
-func (sb *selectBuilder) From(from ...Ge) *selectBuilder {
-	sb.from = append(sb.from, from...)
-	return sb
+func (b *selectBuilder) From(from ...Ge) *selectBuilder {
+	b.from = append(b.from, from...)
+	return b
 }
 
-func (sb *selectBuilder) Join(joins ...Ge) *selectBuilder {
-	sb.joins = append(sb.joins, joins...)
-	return sb
+func (b *selectBuilder) Join(joins ...Ge) *selectBuilder {
+	b.join = append(b.join, joins...)
+	return b
 }
 
-func (sb *selectBuilder) Where(wheres ...Ge) *selectBuilder {
-	sb.wheres = append(sb.wheres, wheres...)
-	return sb
+func (b *selectBuilder) Where(wheres ...Ge) *selectBuilder {
+	b.where = append(b.where, wheres...)
+	return b
 }
 
-func (sb *selectBuilder) OrderBy(orderBys ...Ge) *selectBuilder {
-	sb.orderBys = append(sb.orderBys, orderBys...)
-	return sb
+func (b *selectBuilder) OrderBy(orderBys ...Ge) *selectBuilder {
+	b.orderBy = append(b.orderBy, orderBys...)
+	return b
 }
 
-func (sb *selectBuilder) Clear() *selectBuilder {
-	sb.selects = []Ge{}
-	sb.from = []Ge{}
-	sb.wheres = []Ge{}
-	sb.orderBys = []Ge{}
-	return sb
+func (b *selectBuilder) Clear() *selectBuilder {
+	b.selects = []Ge{}
+	b.from = []Ge{}
+	b.where = []Ge{}
+	b.orderBy = []Ge{}
+	return b
 }
 
-func (sb *selectBuilder) SQL() (string, []interface{}) {
+func (b *selectBuilder) SQL() (string, []interface{}) {
 	joiner := NewJoiner([]Ge{
-		Select(sb.selects...),
-		From(sb.from...),
-		NewJoiner(sb.joins, "", "", "", false),
-		Where(sb.wheres...),
-		OrderBy(sb.orderBys...)}, " ", "", "", false)
+		Select(b.selects...),
+		From(b.from...),
+		NewJoiner(b.join, "", "", "", false),
+		Where(b.where...),
+		OrderBy(b.orderBy...)}, " ", "", "", false)
 	return joiner.SQL()
 }
 
-func (sb *selectBuilder) Build() (string, []interface{}) {
-	return sb.SQL()
+func (b *selectBuilder) Build() (string, []interface{}) {
+	return b.SQL()
 }
