@@ -2,6 +2,13 @@ package sgen
 
 import "fmt"
 
+var (
+	Alias = func(g Ge, as string) Ge { return &alias{g, as} }
+	As    = Alias
+	Arg   = func(p interface{}) Ge { return &arg{p} }
+	From  = func(gs ...Ge) Ge { return NewJoiner(gs, ", ", "FROM ", "", false) }
+)
+
 type (
 	P         = C
 	C         = Column
@@ -15,10 +22,10 @@ type (
 	arg struct {
 		p interface{}
 	}
-)
-
-var (
-	Arg = func(p interface{}) Ge { return &arg{p} }
+	alias struct {
+		g     Ge
+		alias string
+	}
 )
 
 func (c Column) SQL() (string, []interface{}) {
@@ -31,4 +38,9 @@ func (t Table) SQL() (string, []interface{}) {
 
 func (a *arg) SQL() (string, []interface{}) {
 	return "?", []interface{}{a.p}
+}
+
+func (a *alias) SQL() (string, []interface{}) {
+	s, ps := a.g.SQL()
+	return fmt.Sprintf("%s AS %s", s, a.alias), ps
 }
