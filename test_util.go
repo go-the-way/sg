@@ -12,21 +12,21 @@ func (g *geImpl) SQL() (string, []interface{}) {
 	return "geImpl", nil
 }
 
-func TestSingleEqual(t *testing.T, except, v interface{}) {
-	if !reflect.DeepEqual(except, v) {
-		t.Fatalf("%v except = [%v] but get = [%v]\n", t.Name(), except, v)
+func testSingleEqual(t *testing.T, expect, v interface{}) {
+	if !reflect.DeepEqual(expect, v) {
+		t.Fatalf("%v expect = [%v] but get = [%v]\n", t.Name(), expect, v)
 	}
-	t.Logf("%v except = [%v] get get = [%v]\n", t.Name(), except, v)
+	t.Logf("%v expect = [%v] get get = [%v]\n", t.Name(), expect, v)
 }
 
-func TestEqual(t *testing.T, g Generator, exceptSql string, exceptPs []interface{}) {
+func testEqual(t *testing.T, g Generator, expectSql string, expectPs []interface{}) {
 	getSql, getPs := g.SQL()
-	if getSql != exceptSql {
-		t.Fatalf("%v except sql = [%v] but get sql = [%v]\n", t.Name(), exceptSql, getSql)
+	if getSql != expectSql {
+		t.Fatalf("%v expect sql = [%v] but get sql = [%v]\n", t.Name(), expectSql, getSql)
 	}
-	if !reflect.DeepEqual(getPs, exceptPs) {
-		t.Fatalf("%v except ps = [%v] but get ps = [%v]\n", t.Name(), exceptPs, getPs)
+	if !reflect.DeepEqual(getPs, expectPs) {
+		t.Fatalf("%v expect ps = [%v] but get ps = [%v]\n", t.Name(), expectPs, getPs)
 	}
-	t.Logf("%v except sql = [%v] get sql = [%v]\n", t.Name(), exceptSql, getSql)
-	t.Logf("%v except ps = [%v] get ps = [%v]\n", t.Name(), exceptPs, getPs)
+	t.Logf("%v expect sql = [%v] get sql = [%v]\n", t.Name(), expectSql, getSql)
+	t.Logf("%v expect ps = [%v] get ps = [%v]\n", t.Name(), expectPs, getPs)
 }

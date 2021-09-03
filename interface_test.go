@@ -6,8 +6,8 @@ import (
 )
 
 func TestColumn(t *testing.T) {
-	test := func(col string, except string) {
-		TestEqual(t, C(col), except, nil)
+	test := func(col string, expect string) {
+		testEqual(t, C(col), expect, nil)
 	}
 	test("hello", "hello")
 	test("hello1", "hello1")
@@ -16,9 +16,9 @@ func TestColumn(t *testing.T) {
 	test("hello4", "hello4")
 }
 
-func TestTable(t *testing.T) {
-	test := func(col string, except string) {
-		TestEqual(t, T(col), except, nil)
+func TestC(t *testing.T) {
+	test := func(col string, expect string) {
+		testEqual(t, T(col), expect, nil)
 	}
 	test("table", "table")
 	test("table2", "table2")
@@ -36,12 +36,12 @@ func TestCEqColumn(t *testing.T) {
 	}
 }
 
-func TestTEqTable(t *testing.T) {
+func TestTEqC(t *testing.T) {
 	cn := "table"
 	c := T(cn)
-	col := Table(cn)
+	col := C(cn)
 	if !reflect.DeepEqual(c, col) {
-		t.Fatalf("T[%v] is an alias for Table[%v], but not equals", c, col)
+		t.Fatalf("T[%v] is an alias for C[%v], but not equals", c, col)
 	}
 }
 
@@ -58,24 +58,24 @@ func TestGeEqGenerator(t *testing.T) {
 }
 
 func TestAs(t *testing.T) {
-	TestEqual(t, As(C("hello"), "hello_lo"), "hello AS hello_lo", nil)
+	testEqual(t, As(C("hello"), "hello_lo"), "hello AS hello_lo", nil)
 }
 
 func TestAlias(t *testing.T) {
-	TestEqual(t, Alias(C("hello"), "hello_lo"), "hello AS hello_lo", nil)
+	testEqual(t, Alias(C("hello"), "hello_lo"), "hello AS hello_lo", nil)
 }
 
 func TestFrom(t *testing.T) {
-	TestEqual(t, From(T("table_a"), T("table_b")), `FROM table_a, table_b`, []interface{}{})
-	TestEqual(t, From(Table("table_a"), Table("table_b")), `FROM table_a, table_b`, []interface{}{})
+	testEqual(t, From(T("table_a"), T("table_b")), `FROM table_a, table_b`, []interface{}{})
+	testEqual(t, From(C("table_a"), C("table_b")), `FROM table_a, table_b`, []interface{}{})
 }
 
 func TestFromAs(t *testing.T) {
-	TestEqual(t, From(As(T("table_a"), "ta"), As(T("table_b"), "tb")), `FROM table_a AS ta, table_b AS tb`, []interface{}{})
-	TestEqual(t, From(As(Table("table_a"), "ta"), As(Table("table_b"), "tb")), `FROM table_a AS ta, table_b AS tb`, []interface{}{})
+	testEqual(t, From(As(T("table_a"), "ta"), As(T("table_b"), "tb")), `FROM table_a AS ta, table_b AS tb`, []interface{}{})
+	testEqual(t, From(As(C("table_a"), "ta"), As(C("table_b"), "tb")), `FROM table_a AS ta, table_b AS tb`, []interface{}{})
 }
 
 func TestFromAlias(t *testing.T) {
-	TestEqual(t, From(Alias(T("table_a"), "ta"), Alias(T("table_b"), "tb")), `FROM table_a AS ta, table_b AS tb`, []interface{}{})
-	TestEqual(t, From(Alias(Table("table_a"), "ta"), Alias(Table("table_b"), "tb")), `FROM table_a AS ta, table_b AS tb`, []interface{}{})
+	testEqual(t, From(Alias(T("table_a"), "ta"), Alias(T("table_b"), "tb")), `FROM table_a AS ta, table_b AS tb`, []interface{}{})
+	testEqual(t, From(Alias(C("table_a"), "ta"), Alias(C("table_b"), "tb")), `FROM table_a AS ta, table_b AS tb`, []interface{}{})
 }
