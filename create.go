@@ -115,7 +115,7 @@ func (c *createTableBuilder) Clear() *createTableBuilder {
 
 func (c *createTableBuilder) SQL() (string, []interface{}) {
 	joiner := NewJoiner([]Ge{
-		NewJoiner([]Ge{P("CREATE"), P("TABLE"), c.table}, " ", "", "", false),
+		NewJoiner([]Ge{Create, Table, c.table}, " ", "", "", false),
 		NewJoiner([]Ge{
 			NewJoiner(c.columnDefinition, ", ", "", "", false),
 			PrimaryKey(c.primaryKey...),
