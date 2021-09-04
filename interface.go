@@ -9,14 +9,8 @@ var (
 	Alias = func(g Ge, as string) Ge { return &alias{g, as} }
 	// Arg defines gen SQL like `?` only means an argument
 	Arg = func(p interface{}) Ge { return &arg{p} }
-	// From defines gen SQL like ``
-	From      = func(gs ...Ge) Ge { return NewJoiner(gs, ", ", "FROM ", "", false) }
-	Table     = func() Ge { return P("TABLE") }
-	Drop      = func() Ge { return P("DROP") }
-	Alter     = func() Ge { return P("ALTER") }
-	View      = func() Ge { return P("VIEW") }
-	Event     = func() Ge { return P("EVENT") }
-	Procedure = func() Ge { return P("PROCEDURE") }
+	// From defines gen SQL like `FROM ...`
+	From = func(gs ...Ge) Ge { return NewJoiner(gs, ", ", "FROM ", "", false) }
 )
 
 type (
@@ -33,6 +27,9 @@ type (
 	// Generator defines Interface its
 	Generator interface {
 		SQL() (string, []interface{})
+	}
+	Builder interface {
+		Build() (string, []interface{})
 	}
 	arg struct {
 		p interface{}
