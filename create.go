@@ -48,7 +48,7 @@ var (
 	// PrimaryKey defines gen SQL like `PRIMARY KEY(id, name)`
 	PrimaryKey = func(gs ...Ge) Ge { return NewJoiner(gs, ", ", "PRIMARY KEY ", "", true) }
 	// Default defines gen SQL like `DEFAULT '0'`
-	Default = func(ge Ge) Ge { return NewJoiner([]Ge{P("DEFAULT '"), ge}, "", "", "'", false) }
+	Default = func(ge Ge) Ge { return NewJoiner([]Ge{P("DEFAULT "), ge}, "", "", "", false) }
 	// Comment defines gen SQL like `COMMENT 'comment'`
 	Comment = func(comment string) Ge { return P(fmt.Sprintf("COMMENT '%s'", comment)) }
 )

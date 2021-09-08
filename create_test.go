@@ -37,7 +37,7 @@ func TestColumnDefinition(t *testing.T) {
 		`id bigint NOT NULL AUTO_INCREMENT COMMENT 'ID'`)
 	testEqualWithoutPs(t, ColumnDefinition(P("name"), P("varchar(50)"), false, false, false, "", "Name"),
 		`name varchar(50) NOT NULL COMMENT 'Name'`)
-	testEqualWithoutPs(t, ColumnDefinition(P("name"), P("varchar(50)"), true, false, true, "000", "Name"),
+	testEqualWithoutPs(t, ColumnDefinition(P("name"), P("varchar(50)"), true, false, true, "'000'", "Name"),
 		`name varchar(50) NULL DEFAULT '000' COMMENT 'Name'`)
 }
 
@@ -48,8 +48,8 @@ func TestPrimaryKey(t *testing.T) {
 }
 
 func TestDefault(t *testing.T) {
-	testEqualWithoutPs(t, Default(C("1")), `DEFAULT '1'`)
-	testEqualWithoutPs(t, Default(C("HELP")), `DEFAULT 'HELP'`)
+	testEqualWithoutPs(t, Default(C("1")), `DEFAULT 1`)
+	testEqualWithoutPs(t, Default(C("'HELP'")), `DEFAULT 'HELP'`)
 }
 
 func TestComment(t *testing.T) {
@@ -63,7 +63,7 @@ func TestCreateTableBuilder(t *testing.T) {
 		Comment("the person table").
 		ColumnDefinition(
 			ColumnDefinition(P("id"), P("int"), false, true, false, "", "ID"),
-			ColumnDefinition(P("name"), P("varchar(50)"), false, false, true, "000", "Name"),
+			ColumnDefinition(P("name"), P("varchar(50)"), false, false, true, "'000'", "Name"),
 		).
 		PrimaryKey(C("id")).
 		Index(IndexDefinition(false, P("idx_name"), C("name")))
