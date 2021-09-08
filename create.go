@@ -69,6 +69,7 @@ var (
 // );
 type createTableBuilder struct {
 	table            Ge
+	ifNotExist       bool
 	comment          string
 	columnDefinition []Ge
 	primaryKey       []Ge
@@ -84,6 +85,10 @@ func CreateTableBuilder() *createTableBuilder {
 
 func (c *createTableBuilder) Table(table Ge) *createTableBuilder {
 	c.table = table
+	return c
+}
+func (c *createTableBuilder) IfNotExist() *createTableBuilder {
+	c.ifNotExist = true
 	return c
 }
 
@@ -121,7 +126,7 @@ func (c *createTableBuilder) Clear() *createTableBuilder {
 
 func (c *createTableBuilder) SQL() (string, []interface{}) {
 	joiner := NewJoiner([]Ge{
-		NewJoiner([]Ge{Create, Table, c.table}, " ", "", "", false),
+		NewJoiner([]Ge{Create, Table, map[bool]Ge{true: P("IF NOT EXISTS"), false: C("")}[c.ifNotExist], c.table}, " ", "", "", false),
 		NewJoiner([]Ge{
 			NewJoiner(c.columnDefinition, ", ", "", "", false),
 			PrimaryKey(c.primaryKey...),

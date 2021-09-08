@@ -59,6 +59,7 @@ func TestComment(t *testing.T) {
 func TestCreateTableBuilder(t *testing.T) {
 	builder := CreateTableBuilder().
 		Table(T("table_person")).
+		IfNotExist().
 		Comment("the person table").
 		ColumnDefinition(
 			ColumnDefinition(P("id"), P("int"), false, true, false, "", "ID"),
@@ -66,5 +67,5 @@ func TestCreateTableBuilder(t *testing.T) {
 		).
 		PrimaryKey(C("id")).
 		Index(IndexDefinition(false, P("idx_name"), C("name")))
-	testEqualWithoutPs(t, builder, `CREATE TABLE table_person(id int NOT NULL AUTO_INCREMENT COMMENT 'ID', name varchar(50) NOT NULL DEFAULT '000' COMMENT 'Name', PRIMARY KEY (id), INDEX idx_name (name))COMMENT 'the person table'`)
+	testEqualWithoutPs(t, builder, `CREATE TABLE IF NOT EXISTS table_person(id int NOT NULL AUTO_INCREMENT COMMENT 'ID', name varchar(50) NOT NULL DEFAULT '000' COMMENT 'Name', PRIMARY KEY (id), INDEX idx_name (name))COMMENT 'the person table'`)
 }
