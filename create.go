@@ -69,6 +69,7 @@ var (
 // );
 type createTableBuilder struct {
 	table            Ge
+	comment          string
 	columnDefinition []Ge
 	primaryKey       []Ge
 	indexes          []Ge
@@ -83,6 +84,11 @@ func CreateTableBuilder() *createTableBuilder {
 
 func (c *createTableBuilder) Table(table Ge) *createTableBuilder {
 	c.table = table
+	return c
+}
+
+func (c *createTableBuilder) Comment(comment string) *createTableBuilder {
+	c.comment = comment
 	return c
 }
 
@@ -121,6 +127,6 @@ func (c *createTableBuilder) SQL() (string, []interface{}) {
 			PrimaryKey(c.primaryKey...),
 			NewJoiner(c.indexes, ", ", "", "", false),
 		}, ", ", "", "", true,
-		)}, "", "", "", false)
+		), Comment(c.comment)}, "", "", "", false)
 	return joiner.SQL()
 }
