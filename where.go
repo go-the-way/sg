@@ -20,6 +20,7 @@ var (
 	AndGroup   = func(gs ...Ge) Ge { return NewJoiner(gs, " AND ", "", "", true) }
 	OrGroup    = func(gs ...Ge) Ge { return NewJoiner(gs, " OR ", "", "", true) }
 	Eq         = func(c C, v interface{}) Ge { return &wC{c, "=", v, "(", ")"} }
+	NotEq      = func(c C, v interface{}) Ge { return &wC{c, "!=", v, "(", ")"} }
 	Gt         = func(c C, v interface{}) Ge { return &wC{c, ">", v, "(", ")"} }
 	GtEq       = func(c C, v interface{}) Ge { return &wC{c, ">=", v, "(", ")"} }
 	Lt         = func(c C, v interface{}) Ge { return &wC{c, "<", v, "(", ")"} }

@@ -48,6 +48,24 @@ func TestEq(t *testing.T) {
 	testWhere(t, c, Eq(c, "hole hole"), op, "hole hole")
 }
 
+func TestNotEq(t *testing.T) {
+	c := Column("col")
+	op := "!="
+	testWhere(t, c, NotEq(c, rune(100)), op, rune(100))
+	testWhere(t, c, NotEq(c, 'c'), op, 'c')
+	testWhere(t, c, NotEq(c, byte(100)), op, byte(100))
+	testWhere(t, c, NotEq(c, 100), op, 100)
+	testWhere(t, c, NotEq(c, int8(100)), op, int8(100))
+	testWhere(t, c, NotEq(c, int16(100)), op, int16(100))
+	testWhere(t, c, NotEq(c, int32(100)), op, int32(100))
+	testWhere(t, c, NotEq(c, int64(100)), op, int64(100))
+	testWhere(t, c, NotEq(c, float32(100)), op, float32(100))
+	testWhere(t, c, NotEq(c, float64(100)), op, float64(100))
+	testWhere(t, c, NotEq(c, complex64(100)), op, complex64(100))
+	testWhere(t, c, NotEq(c, complex128(100)), op, complex128(100))
+	testWhere(t, c, NotEq(c, "hole hole"), op, "hole hole")
+}
+
 func TestGt(t *testing.T) {
 	c := Column("col")
 	op := ">"
@@ -231,6 +249,7 @@ func TestBetweenAnd(t *testing.T) {
 
 func TestAnd(t *testing.T) {
 	testEqual(t, And(Eq("c", 100)), `AND (c = ?)`, []interface{}{100})
+	testEqual(t, And(NotEq("c", 100)), `AND (c != ?)`, []interface{}{100})
 	testEqual(t, And(Gt("c", 100)), `AND (c > ?)`, []interface{}{100})
 	testEqual(t, And(GtEq("c", 100)), `AND (c >= ?)`, []interface{}{100})
 	testEqual(t, And(Lt("c", 100)), `AND (c < ?)`, []interface{}{100})
@@ -246,6 +265,7 @@ func TestAnd(t *testing.T) {
 
 func TestOr(t *testing.T) {
 	testEqual(t, Or(Eq("c", 100)), `OR (c = ?)`, []interface{}{100})
+	testEqual(t, Or(NotEq("c", 100)), `OR (c != ?)`, []interface{}{100})
 	testEqual(t, Or(Gt("c", 100)), `OR (c > ?)`, []interface{}{100})
 	testEqual(t, Or(GtEq("c", 100)), `OR (c >= ?)`, []interface{}{100})
 	testEqual(t, Or(Lt("c", 100)), `OR (c < ?)`, []interface{}{100})
@@ -262,6 +282,8 @@ func TestOr(t *testing.T) {
 func TestWhere(t *testing.T) {
 	testEqual(t, Where(AndGroup(Eq("a", 1))), "WHERE ((a = ?))", []interface{}{1})
 	testEqual(t, Where(AndGroup(Eq("a", 1), Eq("b", 100))), "WHERE ((a = ?) AND (b = ?))", []interface{}{1, 100})
+	testEqual(t, Where(AndGroup(NotEq("a", 1))), "WHERE ((a != ?))", []interface{}{1})
+	testEqual(t, Where(AndGroup(NotEq("a", 1), NotEq("b", 100))), "WHERE ((a != ?) AND (b != ?))", []interface{}{1, 100})
 	testEqual(t, Where(AndGroup(Gt("a", 1))), "WHERE ((a > ?))", []interface{}{1})
 	testEqual(t, Where(AndGroup(Gt("a", 1), Gt("b", 100))), "WHERE ((a > ?) AND (b > ?))", []interface{}{1, 100})
 	testEqual(t, Where(AndGroup(GtEq("a", 1))), "WHERE ((a >= ?))", []interface{}{1})
@@ -283,6 +305,8 @@ func TestWhere(t *testing.T) {
 
 	testEqual(t, Where(OrGroup(Eq("a", 1))), "WHERE ((a = ?))", []interface{}{1})
 	testEqual(t, Where(OrGroup(Eq("a", 1), Eq("b", 100))), "WHERE ((a = ?) OR (b = ?))", []interface{}{1, 100})
+	testEqual(t, Where(OrGroup(NotEq("a", 1))), "WHERE ((a != ?))", []interface{}{1})
+	testEqual(t, Where(OrGroup(NotEq("a", 1), NotEq("b", 100))), "WHERE ((a != ?) OR (b != ?))", []interface{}{1, 100})
 	testEqual(t, Where(OrGroup(Gt("a", 1))), "WHERE ((a > ?))", []interface{}{1})
 	testEqual(t, Where(OrGroup(Gt("a", 1), Gt("b", 100))), "WHERE ((a > ?) OR (b > ?))", []interface{}{1, 100})
 	testEqual(t, Where(OrGroup(GtEq("a", 1))), "WHERE ((a >= ?))", []interface{}{1})

@@ -52,6 +52,8 @@ func TestGroupBy(t *testing.T) {
 func TestHaving(t *testing.T) {
 	testEqual(t, Having(AndGroup(Eq("a", 1))), "HAVING ((a = ?))", []interface{}{1})
 	testEqual(t, Having(AndGroup(Eq("a", 1), Eq("b", 100))), "HAVING ((a = ?) AND (b = ?))", []interface{}{1, 100})
+	testEqual(t, Having(AndGroup(NotEq("a", 1))), "HAVING ((a != ?))", []interface{}{1})
+	testEqual(t, Having(AndGroup(NotEq("a", 1), NotEq("b", 100))), "HAVING ((a != ?) AND (b != ?))", []interface{}{1, 100})
 	testEqual(t, Having(AndGroup(Gt("a", 1))), "HAVING ((a > ?))", []interface{}{1})
 	testEqual(t, Having(AndGroup(Gt("a", 1), Gt("b", 100))), "HAVING ((a > ?) AND (b > ?))", []interface{}{1, 100})
 	testEqual(t, Having(AndGroup(GtEq("a", 1))), "HAVING ((a >= ?))", []interface{}{1})
@@ -73,6 +75,8 @@ func TestHaving(t *testing.T) {
 
 	testEqual(t, Having(OrGroup(Eq("a", 1))), "HAVING ((a = ?))", []interface{}{1})
 	testEqual(t, Having(OrGroup(Eq("a", 1), Eq("b", 100))), "HAVING ((a = ?) OR (b = ?))", []interface{}{1, 100})
+	testEqual(t, Having(OrGroup(NotEq("a", 1))), "HAVING ((a != ?))", []interface{}{1})
+	testEqual(t, Having(OrGroup(NotEq("a", 1), NotEq("b", 100))), "HAVING ((a != ?) OR (b != ?))", []interface{}{1, 100})
 	testEqual(t, Having(OrGroup(Gt("a", 1))), "HAVING ((a > ?))", []interface{}{1})
 	testEqual(t, Having(OrGroup(Gt("a", 1), Gt("b", 100))), "HAVING ((a > ?) OR (b > ?))", []interface{}{1, 100})
 	testEqual(t, Having(OrGroup(GtEq("a", 1))), "HAVING ((a >= ?))", []interface{}{1})
