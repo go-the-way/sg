@@ -279,6 +279,22 @@ func TestOr(t *testing.T) {
 	testEqual(t, Or(Instr("c", 100)), `OR (INSTR(c, ?) > 0)`, []interface{}{100})
 }
 
+func TestNot(t *testing.T) {
+	testEqual(t, Not(Eq("c", 100)), `!(c = ?)`, []interface{}{100})
+	testEqual(t, Not(NotEq("c", 100)), `!(c != ?)`, []interface{}{100})
+	testEqual(t, Not(Gt("c", 100)), `!(c > ?)`, []interface{}{100})
+	testEqual(t, Not(GtEq("c", 100)), `!(c >= ?)`, []interface{}{100})
+	testEqual(t, Not(Lt("c", 100)), `!(c < ?)`, []interface{}{100})
+	testEqual(t, Not(LtEq("c", 100)), `!(c <= ?)`, []interface{}{100})
+	testEqual(t, Not(Like("c", 100)), `!(c LIKE CONCAT('%', ?, '%'))`, []interface{}{100})
+	testEqual(t, Not(LeftLike("c", 100)), `!(c LIKE CONCAT('%', ?, ''))`, []interface{}{100})
+	testEqual(t, Not(RightLike("c", 100)), `!(c LIKE CONCAT('', ?, '%'))`, []interface{}{100})
+	testEqual(t, Not(In("c", 100)), `!(c IN (?))`, []interface{}{100})
+	testEqual(t, Not(In("c", 100, 200)), `!(c IN (?, ?))`, []interface{}{100, 200})
+	testEqual(t, Not(In("c", 100, 200, 300)), `!(c IN (?, ?, ?))`, []interface{}{100, 200, 300})
+	testEqual(t, Not(Instr("c", 100)), `!(INSTR(c, ?) > 0)`, []interface{}{100})
+}
+
 func TestWhere(t *testing.T) {
 	testEqual(t, Where(AndGroup(Eq("a", 1))), "WHERE ((a = ?))", []interface{}{1})
 	testEqual(t, Where(AndGroup(Eq("a", 1), Eq("b", 100))), "WHERE ((a = ?) AND (b = ?))", []interface{}{1, 100})

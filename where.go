@@ -17,6 +17,7 @@ var (
 	Where      = func(gs ...Ge) Ge { return NewJoiner(gs, "", "WHERE ", "", false) }
 	And        = func(g Ge) Ge { return NewJoiner([]Ge{g}, "", "AND ", "", false) }
 	Or         = func(g Ge) Ge { return NewJoiner([]Ge{g}, "", "OR ", "", false) }
+	Not        = func(g Ge) Ge { return NewJoiner([]Ge{g}, "", "!", "", false) }
 	AndGroup   = func(gs ...Ge) Ge { return NewJoiner(gs, " AND ", "", "", true) }
 	OrGroup    = func(gs ...Ge) Ge { return NewJoiner(gs, " OR ", "", "", true) }
 	Eq         = func(c C, v interface{}) Ge { return &wC{c, "=", v, "(", ")"} }
