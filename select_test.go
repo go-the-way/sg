@@ -1,4 +1,17 @@
-package sgen
+/*
+ * Copyright 2021 sg(go-the-way) Author. All Rights Reserved.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package sg
 
 import "testing"
 
@@ -105,4 +118,21 @@ func TestSelectBuilder(t *testing.T) {
 		Where(AndGroup(Eq("a", 100), Eq("b", 200))).
 		OrderBy(DescGroup(C("a"), C("b")))
 	testEqual(t, builder, `SELECT a, b FROM table_person LEFT JOIN table_a AS ta ON (ta.col1 = tb.col1) WHERE ((a = ?) AND (b = ?)) ORDER BY a DESC, b DESC`, []interface{}{100, 200})
+}
+
+func TestSelectBuilder_Clear(t *testing.T) {
+	builder := SelectBuilder().From(T("table"))
+	builder.Clear()
+	if len(builder.selects) > 0 {
+		t.Errorf("builder's selects required empty")
+	}
+	if len(builder.from) > 0 {
+		t.Errorf("builder's from required empty")
+	}
+	if len(builder.where) > 0 {
+		t.Errorf("builder's where required empty")
+	}
+	if len(builder.orderBy) > 0 {
+		t.Errorf("builder's orderBy required empty")
+	}
 }

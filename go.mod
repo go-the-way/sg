@@ -1,3 +1,3 @@
-module github.com/billcoding/sgen
+module github.com/go-the-way/sg
 
-go 1.17
+go 1.16
