@@ -4,6 +4,8 @@
 [![codecov](https://codecov.io/gh/go-the-way/sg/branch/main/graph/badge.svg?token=8MAR3J959H)](https://codecov.io/gh/go-the-way/sg)
 [![Go Report Card](https://goreportcard.com/badge/github.com/go-the-way/sg)](https://goreportcard.com/report/github.com/go-the-way/sg)
 [![GoDoc](https://pkg.go.dev/badge/github.com/go-the-way/sg?status.svg)](https://pkg.go.dev/github.com/go-the-way/sg?tab=doc)
+[![Release](https://img.shields.io/github/release/go-the-way/sg.svg?style=flat-square)](https://github.com/go-the-way/sg/releases)
+[![License](https://img.shields.io/github/license/go-the-way/sg)](https://raw.githubusercontent.com/go-the-way/sg/main/LICENSE)
 
 A SQL Gen for generating standard SQLs(supports: CRUD) written in Go.
 
