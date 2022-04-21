@@ -9,13 +9,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Package sgen
+// Package sg
 /*
-A SQL Gen for generating standard SQLs(supports: CRUD) written in Go.
 
-It's specially for your ORM framework to generate SQLs.
-
-If you want to use pure SQLs in your App, it' Ok.
+sg: A simple standard SQL generator written in Go.
 
 Build a create table SQL:
 
