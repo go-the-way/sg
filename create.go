@@ -81,6 +81,7 @@ var (
 type createTableBuilder struct {
 	table            Ge
 	ifNotExist       bool
+	commented        bool
 	comment          string
 	columnDefinition []Ge
 	primaryKey       []Ge
@@ -100,6 +101,11 @@ func (c *createTableBuilder) Table(table Ge) *createTableBuilder {
 }
 func (c *createTableBuilder) IfNotExist() *createTableBuilder {
 	c.ifNotExist = true
+	return c
+}
+
+func (c *createTableBuilder) Commented() *createTableBuilder {
+	c.commented = true
 	return c
 }
 
@@ -124,14 +130,18 @@ func (c *createTableBuilder) Index(index ...Ge) *createTableBuilder {
 }
 
 func (c *createTableBuilder) Build() (string, []interface{}) {
-	joiner := NewJoiner([]Ge{
+	ges := []Ge{
 		NewJoiner([]Ge{Create, Table, map[bool]Ge{true: P("IF NOT EXISTS"), false: C("")}[c.ifNotExist], c.table}, " ", "", "", false),
 		NewJoiner([]Ge{
 			NewJoiner(c.columnDefinition, ", ", "", "", false),
 			PrimaryKey(c.primaryKey...),
 			NewJoiner(c.indexes, ", ", "", "", false),
 		}, ", ", "", "", true,
-		), Comment(c.comment)}, "", "", "", false)
+		)}
+	if c.commented {
+		ges = append(ges, Comment(c.comment))
+	}
+	joiner := NewJoiner(ges, "", "", "", false)
 	return joiner.SQL()
 }
 

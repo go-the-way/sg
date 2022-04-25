@@ -71,6 +71,7 @@ func TestCreateTableBuilder(t *testing.T) {
 	builder := CreateTableBuilder().
 		Table(T("table_person")).
 		IfNotExist().
+		Commented().
 		Comment("the person table").
 		ColumnDefinition(
 			ColumnDefinition(P("id"), P("int"), false, true, false, "", "ID"),
